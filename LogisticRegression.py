@@ -82,3 +82,5 @@ predictions = model.predict(X_test)
 # Calculate and print evaluation metrics
 accuracy, precision, recall, f1_score = evaluate_metrics(y_test, predictions)
 print(f"Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1 Score: {f1_score:.4f}")
+
+# Accuracy: 0.9561, Precision: 0.8111, Recall: 0.9068, F1 Score: 0.8563
