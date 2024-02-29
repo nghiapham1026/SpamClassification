@@ -96,7 +96,7 @@ public class LogisticRegressionSGD {
         return labels;
     }
 
-    public static void evaluateMetrics(int[] yTrue, int[] yPred) {
+    public static void evaluateMetrics(int[] yTrue, int[] yPred, String setName) {
         int truePositive = 0;
         int trueNegative = 0;
         int falsePositive = 0;
@@ -108,11 +108,27 @@ public class LogisticRegressionSGD {
             else if (yTrue[i] == 1 && yPred[i] == 0) falseNegative++;
         }
         double accuracy = (double) (truePositive + trueNegative) / (yTrue.length);
-        double precision = truePositive / (double) (truePositive + falsePositive);
-        double recall = truePositive / (double) (truePositive + falseNegative);
-        double f1Score = 2 * (precision * recall) / (precision + recall);
+        double precisionPositive = truePositive / (double) (truePositive + falsePositive);
+        double recallPositive = truePositive / (double) (truePositive + falseNegative);
+        double f1ScorePositive = 2 * (precisionPositive * recallPositive) / (precisionPositive + recallPositive);
 
-        System.out.printf("Accuracy: %.4f, Precision: %.4f, Recall: %.4f, F1 Score: %.4f%n", accuracy, precision, recall, f1Score);
+        double precisionNegative = trueNegative / (double) (trueNegative + falseNegative);
+        double recallNegative = trueNegative / (double) (trueNegative + falsePositive);
+        double f1ScoreNegative = 2 * (precisionNegative * recallNegative) / (precisionNegative + recallNegative);
+
+        System.out.println("----- " + setName + " Set Metrics -----");
+        System.out.println("Accuracy: " + accuracy);
+        System.out.println("Positive Class (Spam) Precision: " + precisionPositive);
+        System.out.println("Positive Class (Spam) Recall: " + recallPositive);
+        System.out.println("Positive Class (Spam) F1 Score: " + f1ScorePositive);
+        System.out.println("Negative Class (Ham) Precision: " + precisionNegative);
+        System.out.println("Negative Class (Ham) Recall: " + recallNegative);
+        System.out.println("Negative Class (Ham) F1 Score: " + f1ScoreNegative);
+        System.out.println("Confusion Matrix:");
+        System.out.println("\tTrue Negative (Ham): " + trueNegative);
+        System.out.println("\tFalse Positive (Spam as Ham): " + falsePositive);
+        System.out.println("\tFalse Negative (Ham as Spam): " + falseNegative);
+        System.out.println("\tTrue Positive (Spam): " + truePositive);
     }
 
     public static void main(String[] args) {
@@ -129,10 +145,43 @@ public class LogisticRegressionSGD {
         model.fit(XTrain, yTrain);
 
         System.out.println("Predicting on test set...");
-        int[] predictions = model.predict(XTest);
 
-        evaluateMetrics(yTest, predictions);
+        // After training the model
+        int[] trainPredictions = model.predict(XTrain);
+        evaluateMetrics(yTrain, trainPredictions, "Train");
+
+        // After predicting on the test set
+        int[] testPredictions = model.predict(XTest);
+        evaluateMetrics(yTest, testPredictions, "Test");
     }
 }
 
-//Accuracy: 0.9561, Precision: 0.8111, Recall: 0.9068, F1 Score: 0.8563
+/*
+ * ----- Train Set Metrics -----
+Accuracy: 0.9818344920385736
+Positive Class (Spam) Precision: 0.8902627511591963
+Positive Class (Spam) Recall: 0.9829351535836177
+Positive Class (Spam) F1 Score: 0.9343065693430657
+Negative Class (Ham) Precision: 0.9973767051416579
+Negative Class (Ham) Recall: 0.9816679576555641
+Negative Class (Ham) F1 Score: 0.9894599869876382
+Confusion Matrix:
+        True Negative (Ham): 3802
+        False Positive (Spam as Ham): 71
+        False Negative (Ham as Spam): 10
+        True Positive (Spam): 576
+Generated predictions for 1115 samples
+----- Test Set Metrics -----
+Accuracy: 0.9560538116591928
+Positive Class (Spam) Precision: 0.8111111111111111
+Positive Class (Spam) Recall: 0.906832298136646
+Positive Class (Spam) F1 Score: 0.8563049853372435
+Negative Class (Ham) Precision: 0.983957219251337
+Negative Class (Ham) Recall: 0.9643605870020965
+Negative Class (Ham) F1 Score: 0.9740603493912123
+Confusion Matrix:
+        True Negative (Ham): 920
+        False Positive (Spam as Ham): 34
+        False Negative (Ham as Spam): 15
+        True Positive (Spam): 146
+ */

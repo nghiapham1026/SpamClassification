@@ -6,7 +6,7 @@ def load_csv(filepath):
         csv_reader = csv.reader(file)
         data = list(csv_reader)
     print(f"Loaded {len(data)-1} rows from {filepath}")
-    return data[1:]  # return data excluding header
+    return data[1:]  # Skipping header
 
 def preprocess_data(data):
     X = [list(map(float, row[:-1])) for row in data]  # Convert features to floats
@@ -27,41 +27,44 @@ class LogisticRegressionSGD:
         self.weights = None
     
     def fit(self, X, y):
-        n_samples = len(X)
-        n_features = len(X[0])
-        self.weights = [0.0 for _ in range(n_features)]
-        
-        for iteration in range(self.iterations):
+        n_samples, n_features = len(X), len(X[0])
+        self.weights = [0.0] * n_features
+        for _ in range(self.iterations):
             for i in range(n_samples):
                 linear_combination = dot_product(X[i], self.weights)
                 y_predicted = sigmoid(linear_combination)
                 update = [self.learning_rate * (y[i] - y_predicted) * x_i for x_i in X[i]]
                 self.weights = [w + u for w, u in zip(self.weights, update)]
-            if (iteration + 1) % 10 == 0:
-                print(f"Iteration {iteration + 1}/{self.iterations}")
+            if (_ + 1) % 10 == 0:
+                print(f"Iteration {_ + 1}/{self.iterations}")
     
     def predict_prob(self, X):
         return [sigmoid(dot_product(x, self.weights)) for x in X]
     
     def predict(self, X):
         probabilities = self.predict_prob(X)
-        predictions = [1 if prob >= 0.5 else 0 for prob in probabilities]
-        print(f"Generated predictions for {len(predictions)} samples")
-        return predictions
+        return [1 if prob >= 0.5 else 0 for prob in probabilities]
 
-# Evaluation
 def evaluate_metrics(y_true, y_pred):
-    true_positive = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 1 and yp == 1)
-    true_negative = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 0 and yp == 0)
-    false_positive = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 0 and yp == 1)
-    false_negative = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 1 and yp == 0)
+    tp = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 1 and yp == 1)
+    tn = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 0 and yp == 0)
+    fp = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 0 and yp == 1)
+    fn = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 1 and yp == 0)
     
-    accuracy = (true_positive + true_negative) / len(y_true)
-    precision = true_positive / (true_positive + false_positive) if (true_positive + false_positive) != 0 else 0
-    recall = true_positive / (true_positive + false_negative) if (true_positive + false_negative) != 0 else 0
-    f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) != 0 else 0
+    accuracy = (tp + tn) / len(y_true)
+    precision_pos = tp / (tp + fp) if (tp + fp) else 0
+    recall_pos = tp / (tp + fn) if (tp + fn) else 0
+    f1_score_pos = 2 * (precision_pos * recall_pos) / (precision_pos + recall_pos) if (precision_pos + recall_pos) else 0
     
-    return accuracy, precision, recall, f1_score
+    precision_neg = tn / (tn + fn) if (tn + fn) else 0
+    recall_neg = tn / (tn + fp) if (tn + fp) else 0
+    f1_score_neg = 2 * (precision_neg * recall_neg) / (precision_neg + recall_neg) if (precision_neg + recall_neg) else 0
+    
+    print(f"Accuracy: {accuracy:.4f}")
+    print(f"Positive (Spam) Precision: {precision_pos:.4f}, Recall: {recall_pos:.4f}, F1 Score: {f1_score_pos:.4f}")
+    print(f"Negative (Ham) Precision: {precision_neg:.4f}, Recall: {recall_neg:.4f}, F1 Score: {f1_score_neg:.4f}")
+    print(f"Confusion Matrix: TP={tp}, FP={fp}, TN={tn}, FN={fn}")
+    return accuracy, precision_pos, recall_pos, f1_score_pos, precision_neg, recall_neg, f1_score_neg
 
 # Load and preprocess the datasets
 train_data = load_csv('./train-1.csv')
@@ -75,12 +78,26 @@ model = LogisticRegressionSGD()
 print("Starting training...")
 model.fit(X_train, y_train)
 
-# Predict on test set
-print("Predicting on test set...")
-predictions = model.predict(X_test)
+# Evaluate on training set
+print("\nEvaluating on training set...")
+train_predictions = model.predict(X_train)
+evaluate_metrics(y_train, train_predictions)
 
-# Calculate and print evaluation metrics
-accuracy, precision, recall, f1_score = evaluate_metrics(y_test, predictions)
-print(f"Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1 Score: {f1_score:.4f}")
+# Predict on test set and evaluate
+print("\nPredicting on test set...")
+test_predictions = model.predict(X_test)
+evaluate_metrics(y_test, test_predictions)
 
-# Accuracy: 0.9561, Precision: 0.8111, Recall: 0.9068, F1 Score: 0.8563
+'''
+Evaluating on training set...
+Accuracy: 0.9818
+Positive (Spam) Precision: 0.8903, Recall: 0.9829, F1 Score: 0.9343
+Negative (Ham) Precision: 0.9974, Recall: 0.9817, F1 Score: 0.9895
+Confusion Matrix: TP=576, FP=71, TN=3802, FN=10
+
+Predicting on test set...
+Accuracy: 0.9561
+Positive (Spam) Precision: 0.8111, Recall: 0.9068, F1 Score: 0.8563
+Negative (Ham) Precision: 0.9840, Recall: 0.9644, F1 Score: 0.9741
+Confusion Matrix: TP=146, FP=34, TN=920, FN=15
+'''
