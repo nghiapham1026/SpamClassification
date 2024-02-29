@@ -6,11 +6,13 @@ public class LogisticRegressionSGD {
     private double learningRate;
     private int iterations;
     private double[] weights;
+    private List<Double> logLossHistory; // Store log loss at each iteration
 
     public LogisticRegressionSGD(double learningRate, int iterations) {
         this.learningRate = learningRate;
         this.iterations = iterations;
         this.weights = null;
+        this.logLossHistory = new ArrayList<>();
     }
 
     public static List<String[]> loadCsv(String filepath) {
@@ -41,21 +43,34 @@ public class LogisticRegressionSGD {
         return 1 / (1 + Math.exp(-z));
     }
 
+    private double logLoss(int[] y, double[] probabilities) {
+        double loss = 0.0;
+        for (int i = 0; i < y.length; i++) {
+            loss += y[i] * Math.log(probabilities[i]) + (1 - y[i]) * Math.log(1 - probabilities[i]);
+        }
+        return -loss / y.length;
+    }
+
     public void fit(double[][] X, int[] y) {
         int nSamples = X.length;
         int nFeatures = X[0].length;
         this.weights = new double[nFeatures];
 
         for (int iteration = 0; iteration < this.iterations; iteration++) {
+            double[] probabilities = new double[nSamples];
             for (int i = 0; i < nSamples; i++) {
                 double linearCombination = dotProduct(X[i], this.weights);
-                double yPredicted = sigmoid(linearCombination);
+                probabilities[i] = sigmoid(linearCombination);
+                double yPredicted = probabilities[i];
                 for (int j = 0; j < nFeatures; j++) {
                     this.weights[j] += this.learningRate * (y[i] - yPredicted) * X[i][j];
                 }
             }
-            if ((iteration + 1) % 10 == 0) {
-                System.out.println("Iteration " + (iteration + 1) + "/" + this.iterations);
+            double iterationLogLoss = logLoss(y, probabilities);
+            logLossHistory.add(iterationLogLoss);
+
+            if ((iteration + 1) % 10 == 0 || iteration == this.iterations - 1) {
+                System.out.println("Iteration " + (iteration + 1) + "/" + this.iterations + " - Log Loss: " + iterationLogLoss);
             }
         }
     }
@@ -153,6 +168,10 @@ public class LogisticRegressionSGD {
         // After predicting on the test set
         int[] testPredictions = model.predict(XTest);
         evaluateMetrics(yTest, testPredictions, "Test");
+
+        // After training the model, print the total cost (final log loss)
+        double totalCost = model.logLossHistory.get(model.logLossHistory.size() - 1);
+        System.out.println("Total cost of the model: " + totalCost);
     }
 }
 
@@ -184,4 +203,5 @@ Confusion Matrix:
         False Positive (Spam as Ham): 34
         False Negative (Ham as Spam): 15
         True Positive (Spam): 146
+Total cost of the model: 0.0520065413616742
  */

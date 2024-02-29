@@ -1,5 +1,6 @@
 import csv
 import math
+import matplotlib.pyplot as plt
 
 def load_csv(filepath):
     with open(filepath, 'r') as file:
@@ -29,14 +30,24 @@ class LogisticRegressionSGD:
     def fit(self, X, y):
         n_samples, n_features = len(X), len(X[0])
         self.weights = [0.0] * n_features
+        self.loss_history = []  # Store loss at each iteration
+        
         for _ in range(self.iterations):
+            current_loss = 0
             for i in range(n_samples):
                 linear_combination = dot_product(X[i], self.weights)
                 y_predicted = sigmoid(linear_combination)
                 update = [self.learning_rate * (y[i] - y_predicted) * x_i for x_i in X[i]]
                 self.weights = [w + u for w, u in zip(self.weights, update)]
+                # Calculate the loss for the current sample
+                current_loss += y[i] * math.log(y_predicted) + (1 - y[i]) * math.log(1 - y_predicted)
+            
+            # Calculate the average loss over all samples
+            current_loss = -current_loss / n_samples
+            self.loss_history.append(current_loss)
+            
             if (_ + 1) % 10 == 0:
-                print(f"Iteration {_ + 1}/{self.iterations}")
+                print(f"Iteration {_ + 1}/{self.iterations}, Loss: {current_loss}")
     
     def predict_prob(self, X):
         return [sigmoid(dot_product(x, self.weights)) for x in X]
@@ -88,6 +99,16 @@ print("\nPredicting on test set...")
 test_predictions = model.predict(X_test)
 evaluate_metrics(y_test, test_predictions)
 
+total_cost = model.loss_history[-1]
+print(f"Total cost of the model: {total_cost}")
+
+# Optionally, you can visualize the loss over iterations using matplotlib
+plt.plot(model.loss_history)
+plt.xlabel('Iteration')
+plt.ylabel('Log Loss')
+plt.title('Training Log Loss Over Iterations')
+plt.show()
+
 '''
 Evaluating on training set...
 Accuracy: 0.9818
@@ -100,4 +121,5 @@ Accuracy: 0.9561
 Positive (Spam) Precision: 0.8111, Recall: 0.9068, F1 Score: 0.8563
 Negative (Ham) Precision: 0.9840, Recall: 0.9644, F1 Score: 0.9741
 Confusion Matrix: TP=146, FP=34, TN=920, FN=15
+Total cost of the model: 0.0520065413616742
 '''
