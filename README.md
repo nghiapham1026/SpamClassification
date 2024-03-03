@@ -1,14 +1,15 @@
 # SpamClassification - Programming Assignment #1
+### Image of log loss plot is at plot.png
 
 This project implements a logistic regression model using stochastic gradient descent (SGD) in both Python and Java. The model is trained to classify data into two classes, which are typical for spam detection problems. The scripts will output the evaluation metrics for both the training and test sets, including the total cost of the model as calculated by the final log loss.
 
-## Project Structure
+## Project Scripts
 
 The project contains two scripts:
 - `LogisticRegressionSGD.py`: The Python implementation of SGD for logistic regression.
-- `LogisticRegressionSGD.java`: The Java implementation of SGD for logistic regression.
+- `LogisticRegressionSGD.java`: The Java implementation of SGD for logistic regression. The Java script is much faster than Python
 
-## Usage
+## How to use
 
 ### Python
 
