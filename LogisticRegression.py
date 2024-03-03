@@ -12,7 +12,14 @@ def load_csv(filepath):
 def preprocess_data(data):
     X = [list(map(float, row[:-1])) for row in data]  # Convert features to floats
     y = [int(row[-1]) for row in data]  # Convert labels to integers
+
+    # Count positive and negative instances
+    positive_count = sum(label == 1 for label in y)
+    negative_count = sum(label == 0 for label in y)
+
     print(f"Preprocessed data: {len(X)} samples")
+    print(f"Positive instances: {positive_count}, Negative instances: {negative_count}")
+
     return X, y
 
 def dot_product(v1, v2):

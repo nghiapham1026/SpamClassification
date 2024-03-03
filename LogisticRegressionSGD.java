@@ -149,30 +149,43 @@ public class LogisticRegressionSGD {
     public static void main(String[] args) {
         List<String[]> trainData = loadCsv("./train-1.csv");
         List<String[]> testData = loadCsv("./test-1.csv");
-
+    
+        // Count positive and negative instances in the train file
+        int positiveInstances = 0;
+        int negativeInstances = 0;
+        for (String[] row : trainData) {
+            if (Integer.parseInt(row[row.length - 1]) == 1) {
+                positiveInstances++;
+            } else {
+                negativeInstances++;
+            }
+        }
+        System.out.println("Positive instances in train file: " + positiveInstances);
+        System.out.println("Negative instances in train file: " + negativeInstances);
+    
         double[][] XTrain = preprocessFeatures(trainData);
         int[] yTrain = preprocessLabels(trainData);
         double[][] XTest = preprocessFeatures(testData);
         int[] yTest = preprocessLabels(testData);
-
+    
         LogisticRegressionSGD model = new LogisticRegressionSGD(0.01, 200);
         System.out.println("Starting training...");
         model.fit(XTrain, yTrain);
-
+    
         System.out.println("Predicting on test set...");
-
+    
         // After training the model
         int[] trainPredictions = model.predict(XTrain);
         evaluateMetrics(yTrain, trainPredictions, "Train");
-
+    
         // After predicting on the test set
         int[] testPredictions = model.predict(XTest);
         evaluateMetrics(yTest, testPredictions, "Test");
-
+    
         // After training the model, print the total cost (final log loss)
         double totalCost = model.logLossHistory.get(model.logLossHistory.size() - 1);
         System.out.println("Total cost of the model: " + totalCost);
-    }
+    }    
 }
 
 /*
