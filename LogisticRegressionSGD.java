@@ -189,7 +189,34 @@ public class LogisticRegressionSGD {
 }
 
 /*
- * ----- Train Set Metrics -----
+Loaded 4459 rows from ./train-1.csv
+Loaded 1115 rows from ./test-1.csv
+Positive instances in train file: 586
+Negative instances in train file: 3873
+Starting training...
+Iteration 10/200 - Log Loss: 0.1750429972941354
+Iteration 20/200 - Log Loss: 0.13750056938544888
+Iteration 30/200 - Log Loss: 0.11861972786595595
+Iteration 40/200 - Log Loss: 0.10625013527390886
+Iteration 50/200 - Log Loss: 0.09717340275983574
+Iteration 60/200 - Log Loss: 0.09009117550282754
+Iteration 70/200 - Log Loss: 0.08434660412992144
+Iteration 80/200 - Log Loss: 0.07955900052779098
+Iteration 90/200 - Log Loss: 0.07548798031526856
+Iteration 100/200 - Log Loss: 0.07197228837238939
+Iteration 110/200 - Log Loss: 0.06889821038663452
+Iteration 120/200 - Log Loss: 0.06618213965002254
+Iteration 130/200 - Log Loss: 0.06376077173897395
+Iteration 140/200 - Log Loss: 0.06158525874655854
+Iteration 150/200 - Log Loss: 0.05961734324323422
+Iteration 160/200 - Log Loss: 0.05782662206892225
+Iteration 170/200 - Log Loss: 0.056188577164825934
+Iteration 180/200 - Log Loss: 0.05468316030958641
+Iteration 190/200 - Log Loss: 0.05329377554796852
+Iteration 200/200 - Log Loss: 0.0520065413616742
+Predicting on test set...
+Generated predictions for 4459 samples
+----- Train Set Metrics -----
 Accuracy: 0.9818344920385736
 Positive Class (Spam) Precision: 0.8902627511591963
 Positive Class (Spam) Recall: 0.9829351535836177

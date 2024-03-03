@@ -7,7 +7,7 @@ This project implements a logistic regression model using stochastic gradient de
 
 The project contains two scripts:
 - `LogisticRegressionSGD.py`: The Python implementation of SGD for logistic regression.
-- `LogisticRegressionSGD.java`: The Java implementation of SGD for logistic regression.
+- `LogisticRegressionSGD.java`: The Java implementation of SGD for logistic regression. The Java script is much faster than Python
 
 ## Usage
 

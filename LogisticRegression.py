@@ -117,6 +117,34 @@ plt.title('Training Log Loss Over Iterations')
 plt.show()
 
 '''
+Loaded 4459 rows from ./train-1.csv
+Loaded 1115 rows from ./test-1.csv
+Preprocessed data: 4459 samples
+Positive instances: 586, Negative instances: 3873
+Preprocessed data: 1115 samples
+Positive instances: 161, Negative instances: 954
+Starting training...
+Iteration 10/200, Loss: 0.1750429972941354
+Iteration 20/200, Loss: 0.13750056938544888
+Iteration 30/200, Loss: 0.11861972786595598
+Iteration 40/200, Loss: 0.10625013527390886
+Iteration 50/200, Loss: 0.09717340275983574
+Iteration 60/200, Loss: 0.09009117550282754
+Iteration 70/200, Loss: 0.08434660412992144
+Iteration 80/200, Loss: 0.07955900052779097
+Iteration 90/200, Loss: 0.07548798031526859
+Iteration 100/200, Loss: 0.07197228837238936
+Iteration 110/200, Loss: 0.06889821038663452
+Iteration 120/200, Loss: 0.06618213965002254
+Iteration 130/200, Loss: 0.06376077173897395
+Iteration 140/200, Loss: 0.061585258746558555
+Iteration 150/200, Loss: 0.05961734324323421
+Iteration 160/200, Loss: 0.05782662206892226
+Iteration 170/200, Loss: 0.05618857716482593
+Iteration 180/200, Loss: 0.054683160309586414
+Iteration 190/200, Loss: 0.05329377554796851
+Iteration 200/200, Loss: 0.0520065413616742
+
 Evaluating on training set...
 Accuracy: 0.9818
 Positive (Spam) Precision: 0.8903, Recall: 0.9829, F1 Score: 0.9343
