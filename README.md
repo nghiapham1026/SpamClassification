@@ -5,7 +5,6 @@ This project implements a logistic regression model using SGD in Python. The mod
 
 ## Scripts
 
-The project contains two scripts:
 - `LogisticRegression.py`: Python implementation.
 
 ## How to use
